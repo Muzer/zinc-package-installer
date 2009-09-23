@@ -24,6 +24,24 @@ void MainWindow::show_about_dialog()
     about_dialog.exec();
 }
 
+void MainWindow::load_file()
+{
+    QString file;
+    if (filename == "none")
+    {
+        //QFileDialog dialog;
+        //dialog.setFilter("*.deb; *.rpm; *.bin");
+        //dialog.exec();*.deb; *.rpm; *.bin"
+        file = QFileDialog::getOpenFileName(0, "Select file to install...");
+    }
+    if (file == NULL)
+    {
+        exit(0);
+    }
+    filename = file.toStdString();
+    ui->lbl_app_name->setText(QString(filename.c_str()));
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
