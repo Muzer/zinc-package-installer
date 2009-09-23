@@ -1,0 +1,180 @@
+#summary List of possible installation types
+
+Ubuntu only for the minute
+
+
+
+At first, I'm not sure if this is going to be a full GUI wrapper for the apps, or just a window into the command line-ness. I'm going to write this with the former in mind, but obviously the latter is easier, so will probably be used for a 1.x release.
+
+
+= Pre-compiled binaries =
+
+ROOT_COMMAND here refers to one of the following:
+
+gksu
+gksudo
+kdesu
+kdesudo
+
+
+
+Most of these will be terminal commands for simplicity and a consistent interface. Any relevant messages should be parsed and incorporated into the GUI. There should be an "advanced view" button to show a virtual terminal (a mini-konsole-formatted window, I'm not sure how to do them but I know for a fact they are possible) that has the exact gdebi output.
+
+
+== Deb packages ==
+Firstly, search for the root of the filename (up to and not including first underscore) and if it's in the repo, offer to install that instead along with listing advantages of installing from a repo.
+
+If gdebi is not installed, install it (prompting the user first).
+
+ROOT_COMMAND gdebi filename
+(gdebi is dpkg CLI frontend that handles deps, unlike dpkg. Not to be confused with gdebi-gtk, the graphical version).
+
+
+Common messages (ADD MORE WHEN FOUND) (REMOVE QUOTES) (Many of these can appear in any order, so you should always check whenever a new set of chars enters the input buffer)
+
+"Reading package lists" (initialising)
+"Reading state information" (happens a number of times, again initialising)
+
+Setting up gnome-terminal-data (2.26.0-0ubuntu2.1) ...
+
+If dependancies: "Requires the installation of the following packages:<newline then a list of packages>"
+
+"<a description of the package>"
+
+"Do you want to install the software package? [y/N]:" (pop up a dialog asking this, if user clicks yes, virtually type y, if user clicks no, type n, simples!)
+
+"<number>% [Working]<NO NEWLINE, keeps returning to beginning of line presumably with CR characters and changing it>" - Downloading packages, percentage interpreted as a real value and shown on a progress bar (new lines may appear above these with package names, only after the download is finished. These could probably be ignored since they're not that useful). See below
+
+"Done <package_server> <version/area> <package-name> <version>" - finished downloading that package
+"Done downloading" - finished download
+
+"Selecting previously deselected package <package-name>" - initialising installation of <package-name>
+
+"(Reading database ... <NO NEWLINE>" (reading package database)
+
+"<number> files and directories currently installed.)" (finished reading package database) (this on same line as previous one)
+
+"Unpacking <package> (from <location>) ..." - Installing package
+
+"Processing triggers for <program> ..." - Telling <program> about the newly installed packages
+
+"Setting up <package> (<version>) ..." - Configuring <package>
+
+"Preparing to replace <package> <version> (using <location>) ..." - Initialising upgrade
+
+"Unpacking replacement <package> ..." - Upgrading <package>
+
+"Removing <package> ..." - Removing <package>
+
+
+These are the most common ones, but there are more situations eg conflicts, insecure repos etc that still need to be added...
+
+
+== RPM packages ==
+
+Firstly, search for the root of the filename (up to and not including first hyphen that is followed by a number) and if it's in the repo, offer to install that instead along with listing advantages of installing from a repo.
+
+Prompt the user to try to find a deb package
+
+Use alien to convert and install the RPM:
+
+ROOT_COMMAND alien -i filename
+
+
+
+Messages: TBA
+
+== EXE or MSI packages ==
+
+Use my windows.sh script to run the program with the correct emulator. Let the user take over.
+
+== Other packages ==
+
+(LAST RESORT - DO THIS AFTER SOURCE SEARCHING BELOW): Extract the file, and search for the standard filesystem directories (especially usr and opt). Search both 0 and 1 levels deep. Manually copy all the files, prompting for replacement.
+
+If it is a shell script, figure out how it's packed (shell scripts are almost always self-extracting archives as far as binary packages are concerned) - there are two common ones, makeself and shar. Then basically just run them with whatever verbose options you can find, and let the user handle the rest.
+
+
+If it's a pure binary, just stick it in /usr/local/bin and notify the user how to run it (ie, tell them to type <filename> at a terminal)
+
+
+
+= Sources =
+
+
+== Configure ==
+
+Giveaway file: configure
+
+Execute:
+
+chmod +x configure
+./configure
+make
+ROOT_COMMAND make install
+
+
+
+Error parsing: ./configure error parsing is REALLY HARD. We'll have to invent some uber-clever algorithm to do this.
+
+
+make error parsing is a lot easier. Grep for "No such file or directory". Sed out ": No such file or directory" and ".*: error: ". Install apt-file and run apt-file update if they don't exist (TODO: Find out where the apt-file database is to check if apt-file update has already been run). Run apt-file search (result of previous grep/seds) | grep /(result of previous grep/seds)^ (to find it starting with slash, for a directory separator, and ending at the end of the filename). Sed out ":.*". Remove duplicate lines. Install all packages mentioned.
+
+
+== Pure make ==
+
+Giveaway file: Makefile* (any case, the asterisk means anything at the end - if there is more than one match, try Makefile.linux, makefile.unix, makefile.debian etc), GNUmakefile
+
+make
+ROOT_COMMAND make install
+
+See above for error parsing
+
+
+== Ant ==
+
+Giveaway file: build.xml
+
+ant
+ROOT_COMMAND ant install
+
+Error parsing TODO
+
+== Cmake ==
+
+Giveaway file: CMakeLists.txt
+
+cmake .
+make
+ROOT_COMMAND make install
+
+
+cmake .: TODO
+make: See above
+
+== GNU Autoconf/automake ==
+
+Giveaway files: configure.ac but NOT configure, make
+
+
+= Readmes in compressed packages =
+
+Files to look for and show to the user on request:
+
+README (any case)
+README.TXT (any case)
+README.UNIX (any case)
+README.NIX
+README.LINUX (any case)
+README.DEBIAN (any case)
+README.UBUNTU (any case)
+INSTALL (any case)
+INSTALL.UNIX
+INSTALL.NIX
+INSTALL.LINUX
+INSTALL.DEBIAN
+INSTALL.UBUNTU
+
+README.HTML
+INSTALL.HTML
+
