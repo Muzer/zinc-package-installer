@@ -154,8 +154,54 @@ make: See above
 
 == GNU Autoconf/automake ==
 
-Giveaway files: configure.ac but NOT configure, make
+Giveaway files: configure.ac but NOT configure, makefile.am but NOT makefile.in
 
+automake
+autoconf
+./configure
+make
+ROOT_COMMAND make install
+
+
+
+== imake ==
+Giveaway: Imakefile 
+
+imake 
+make 
+ROOT_COMMAND make install
+
+== Jam ==
+Giveaway: Jamfile
+
+jam
+ROOT_COMMAND jam install
+
+== qmake ==
+Giveaway: *.pro
+
+qmake
+make
+ROOT_COMMAND make install
+
+== Rake ==
+Giveaway: Rakefile/rakefile/Rakefile.rb/rakefile.rb
+
+rake
+ROOT_COMMAND rake install
+
+== SCons ==
+
+Giveaway: SConstruct/Sconstruct/sconstruct
+
+scons
+ROOT_COMMAND scons install
+
+== Else ==
+
+g++ -o <filename> *.c *.cpp *.cxx
+
+ROOT_COMMAND cp <filename> /usr/local/bin
 
 = Readmes in compressed packages =
 
@@ -177,4 +223,3 @@ INSTALL.UBUNTU
 
 README.HTML
 INSTALL.HTML
-
