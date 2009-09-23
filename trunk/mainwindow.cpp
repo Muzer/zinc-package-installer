@@ -17,7 +17,7 @@ void MainWindow::set_filename(string name)
 void MainWindow::show_about_dialog()
 {
     QMessageBox about_dialog;
-    about_dialog.setText("<b>Zinc Package Installer</b><br>Thomas Leese - TomMan81@googlemail.com");
+    about_dialog.setText("<b>Zinc Package Installer</b><br>Thomas Leese - TomMan81@googlemail.com<br>Murray Colpman - muzerakascooby@gmail.com");
     QString text = "Licensed Under GPLv3 or more.\nVersion: ";
     text.append(app_version.c_str());
     about_dialog.setDetailedText(text);
