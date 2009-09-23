@@ -4,6 +4,7 @@
 #include <iostream>
 #include <QtGui/QMainWindow>
 #include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
 
 using namespace std;
 
@@ -20,6 +21,7 @@ public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void set_filename(string name);
+    void load_file();
 
 private:
     Ui::MainWindow *ui;
