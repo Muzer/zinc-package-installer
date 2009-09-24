@@ -41,7 +41,7 @@ void MainWindow::load_file()
     {
         QErrorMessage msg;
         msg.setWindowTitle("Format not supported!");
-        string message = "The format \"." + filetype + "\" isn't currently supported. If you think the format should be supported, submit a bug at <a href=\"http://code.google.com/p/zinc-package-installer\">code.google.com/p/zinc-package-installer</a>.";
+        string message = "The format \"." + filetype + "\" isn't currently supported. If you think the format should be supported, submit a bug at <a href=\"http://code.google.com/p/zinc-package-installer\">code.google.com/p/zinc-package-installer</a>.<br>Your file won't install.";
         msg.showMessage(QString(message.c_str()));
         msg.exec();
         ui->btn_install->setEnabled(false);
