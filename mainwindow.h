@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     void set_filename(string name);
     void load_file();
+    string get_file_type();
 
 private:
     Ui::MainWindow *ui;
