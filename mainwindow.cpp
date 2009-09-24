@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     filename = "none";
     app_version = "0.1 SVN";
-    accepted_formats[0] = ".deb";
+    accepted_formats[0] = "deb";
 }
 
 MainWindow::~MainWindow()
