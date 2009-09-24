@@ -76,7 +76,7 @@ string MainWindow::get_root_cmd()
     if(uid == 0){
         return "";
     }
-    string root_cmd = exec((char*)"which kdesudo || which kdesu || which gksudo || which gksu");
+    string root_cmd = exec((char*)"which kdesudo || which kdesu || which gksudo || which gksu | tr -d '\n' | tr -d '\r'");
     if(root_cmd == "ERROR"){
         QErrorMessage msg;
         msg.setWindowTitle("Missing dependancy");
@@ -90,7 +90,19 @@ string MainWindow::get_root_cmd()
 
 string MainWindow::get_distro()
 {
-    string distro = "fedora";
+    int uid = getuid();
+    if(uid == 0){
+        return "";
+    }
+    string distro = exec((char*)"lsb_release -a 2>/dev/null | grep Distributor\\ ID\\: | sed s/Distributor\\ ID\\:\\\\t// | tr -d '\\n' | tr -d '\\r'");
+    if(distro == "ERROR"){
+        QErrorMessage msg;
+        msg.setWindowTitle("Missing dependancy");
+        string message = "You need to install lsb_release (package name: lsb-release).";
+        msg.showMessage(QString(message.c_str()));
+        msg.exec();
+        exit(0);
+    }
     return distro;
 }
 
@@ -120,10 +132,11 @@ void MainWindow::install_file()
 {
     filename_2 = split_string(filename, "_")[0];
     root_cmd = get_root_cmd();
+    cout << "DEBUG: Distro =" << get_distro() << "eat" << endl;
     cout << "DEBUG: Root command = " << root_cmd << endl;
     if (filetype == "deb")
     {
-        if (get_distro() != "Debian" || get_distro() != "Ubuntu" || get_distro() != "LinuxMint")
+        if (get_distro() != "Debian" && get_distro() != "Ubuntu" && get_distro() != "LinuxMint")
         {
             show_install_error_distro();
             return;
@@ -132,7 +145,7 @@ void MainWindow::install_file()
     }
     else if (filetype == "rpm")
     {
-        if (get_distro() != "Fedora" || get_distro() != "Red Hat" || get_distro() != "OpenSUSE" || get_distro() != "SUSE")
+        if (get_distro() != "Fedora" && get_distro() != "Red Hat" && get_distro() != "OpenSUSE" && get_distro() != "SUSE")
         {
             show_install_error_distro();
             return;
