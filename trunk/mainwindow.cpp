@@ -26,12 +26,10 @@ void MainWindow::show_about_dialog()
 
 void MainWindow::load_file()
 {
-    QString file;
+    QString file = filename.c_str();
     if (filename == "none")
     {
-        //QFileDialog dialog;
         //dialog.setFilter("*.deb; *.rpm; *.bin");
-        //dialog.exec();*.deb; *.rpm; *.bin"
         file = QFileDialog::getOpenFileName(0, "Select file to install...");
     }
     if (file == NULL)
