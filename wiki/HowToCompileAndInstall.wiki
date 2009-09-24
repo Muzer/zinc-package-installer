@@ -7,8 +7,10 @@ This is an information page to show you how to compile and install Zinc.
 = How to compile =
 
 Run qmake-qt4 in main folder!!!
+
 Run make.
-Run ./zinc [file] to install a file.
+
+Run ./zinc <nowiki>[file]</nowiki> to install a file.
 
 = How to install =
 Compile.
