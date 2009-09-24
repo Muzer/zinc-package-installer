@@ -1,6 +1,19 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+std::string exec(char* cmd) {
+    FILE* pipe = popen(cmd, "r");
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    std::string result = "";
+    while(!feof(pipe)) {
+        if(fgets(buffer, 128, pipe) != NULL)
+                result += buffer;
+    }
+    pclose(pipe);
+    return result;
+}
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -59,7 +72,19 @@ string MainWindow::get_file_type()
 
 string MainWindow::get_root_cmd()
 {
-    string root_cmd = "konsole sudo";
+    int uid = getuid();
+    if(uid == 0){
+        return "";
+    }
+    string root_cmd = exec((char*)"which kdesudo || which kdesu || which gksudo || which gksu");
+    if(root_cmd == "ERROR"){
+        QErrorMessage msg;
+        msg.setWindowTitle("Missing dependancy");
+        string message = "You need to install one of: kdesudo, kdesu, gksudo, gksu.";
+        msg.showMessage(QString(message.c_str()));
+        msg.exec();
+        exit(0);
+    }
     return root_cmd;
 }
 
@@ -95,9 +120,10 @@ void MainWindow::install_file()
 {
     filename_2 = split_string(filename, "_")[0];
     root_cmd = get_root_cmd();
+    cout << "DEBUG: Root command = " << root_cmd << endl;
     if (filetype == "deb")
     {
-        if (get_distro() != "debian" || get_distro() != "ubuntu")
+        if (get_distro() != "Debian" || get_distro() != "Ubuntu" || get_distro() != "LinuxMint")
         {
             show_install_error_distro();
             return;
@@ -106,7 +132,7 @@ void MainWindow::install_file()
     }
     else if (filetype == "rpm")
     {
-        if (get_distro() != "fedora" || get_distro() != "redhat" || get_distro() != "opensuse" || get_distro() != "suse")
+        if (get_distro() != "Fedora" || get_distro() != "Red Hat" || get_distro() != "OpenSUSE" || get_distro() != "SUSE")
         {
             show_install_error_distro();
             return;
