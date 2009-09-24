@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-TARGET = zinc-package-installer
+TARGET = zinc
 TEMPLATE = app
 
 

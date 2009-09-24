@@ -9,10 +9,42 @@ MainWindow::MainWindow(QWidget *parent)
     app_version = "0.1 SVN";
 }
 
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+// Methods
+
 void MainWindow::set_filename(string name)
 {
     filename = name;
 }
+
+void MainWindow::load_file()
+{
+    QString file = filename.c_str();
+    if (filename == "none")
+    {
+        file = QFileDialog::getOpenFileName(0, "Select file to install...");
+    }
+    if (file == NULL)
+    {
+        exit(0);
+    }
+    filename = file.toStdString();
+    ui->lbl_app_name->setText(QString(filename.c_str()));
+    ui->lbl_filename->setText(QString(filename.c_str()));
+    ui->lbl_filetype->setText(QString(get_file_type().c_str()));
+}
+
+string MainWindow::get_file_type()
+{
+    string filetype = "???";
+    return filetype;
+}
+
+// Slots
 
 void MainWindow::show_about_dialog()
 {
@@ -22,25 +54,4 @@ void MainWindow::show_about_dialog()
     text.append(app_version.c_str());
     about_dialog.setDetailedText(text);
     about_dialog.exec();
-}
-
-void MainWindow::load_file()
-{
-    QString file = filename.c_str();
-    if (filename == "none")
-    {
-        //dialog.setFilter("*.deb; *.rpm; *.bin");
-        file = QFileDialog::getOpenFileName(0, "Select file to install...");
-    }
-    if (file == NULL)
-    {
-        exit(0);
-    }
-    filename = file.toStdString();
-    ui->lbl_app_name->setText(QString(filename.c_str()));
-}
-
-MainWindow::~MainWindow()
-{
-    delete ui;
 }
