@@ -10,7 +10,7 @@ Run qmake-qt4 in main folder!!!
 
 Run make.
 
-Run ./zinc <nowiki>[file]</nowiki> to install a file.
+Run ./zinc file... to install a file.
 
 = How to install =
 Compile.
