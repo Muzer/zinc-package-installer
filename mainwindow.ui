@@ -198,8 +198,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>btn_install</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>install_file()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>300</x>
+     <y>72</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>299</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>show_about_dialog()</slot>
+  <slot>install_file()</slot>
  </slots>
 </ui>

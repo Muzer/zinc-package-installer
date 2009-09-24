@@ -36,7 +36,7 @@ void MainWindow::load_file()
     filename = file.toStdString();
     ui->lbl_app_name->setText(QString(filename.c_str()));
     ui->lbl_filename->setText(QString(filename.c_str()));
-    string filetype = get_file_type();
+    filetype = get_file_type();
     if (array_find(accepted_formats, 1, filetype) == -1)
     {
         QErrorMessage msg;
@@ -57,6 +57,28 @@ string MainWindow::get_file_type()
     return filetype;
 }
 
+string MainWindow::get_root_cmd()
+{
+    string root_cmd = "konsole sudo";
+    return root_cmd;
+}
+
+string MainWindow::get_distro()
+{
+    string distro = "fedora";
+    return distro;
+}
+
+void MainWindow::show_install_error_distro()
+{
+    QErrorMessage msg;
+    msg.setWindowTitle("Format not supported!");
+    string message = "You have choosen to install " + filename_2 + " which is a deb file on " + get_distro() + " and that distro doesn't support that format, if you think this is wrong submit a bug at code.google.com/p/zin-package-installer.";
+    msg.showMessage(QString(message.c_str()));
+    msg.exec();
+    ui->btn_install->setEnabled(false);
+}
+
 // Slots
 
 void MainWindow::show_about_dialog()
@@ -67,6 +89,30 @@ void MainWindow::show_about_dialog()
     text.append(app_version.c_str());
     about_dialog.setDetailedText(text);
     about_dialog.exec();
+}
+
+void MainWindow::install_file()
+{
+    filename_2 = split_string(filename, "_")[0];
+    root_cmd = get_root_cmd();
+    if (filetype == "deb")
+    {
+        if (get_distro() != "debian" || get_distro() != "ubuntu")
+        {
+            show_install_error_distro();
+            return;
+        }
+        // Install file
+    }
+    else if (filetype == "rpm")
+    {
+        if (get_distro() != "fedora" || get_distro() != "redhat" || get_distro() != "opensuse" || get_distro() != "suse")
+        {
+            show_install_error_distro();
+            return;
+        }
+        // Install file
+    }
 }
 
 // Functions
