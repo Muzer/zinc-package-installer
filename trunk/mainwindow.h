@@ -24,15 +24,22 @@ public:
     void set_filename(string name);
     void load_file();
     string get_file_type();
+    string get_root_cmd();
+    string get_distro();
+    void show_install_error_distro();
 
 private:
     Ui::MainWindow *ui;
     string filename;
+    string filename_2;
+    string filetype;
     string app_version;
     string accepted_formats[1];
+    string root_cmd;
 
 private slots:
     void show_about_dialog();
+    void install_file();
 };
 
 int array_find(string array[], int length, string target);
