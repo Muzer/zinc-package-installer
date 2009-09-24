@@ -66,7 +66,7 @@ string MainWindow::get_root_cmd()
     {
         return "";
     }
-    string root_cmd = exec("which kdesudo || which kdesu || which gksudo || which gksu | tr -d '\n' | tr -d '\r'");
+    string root_cmd = exec("if [ \"`which kdesudo || which kdesu || which gksudo || which gksu`\" = \"\" ]; then false; else echo -n `which kdesudo || which kdesu || which gksudo || which gksu`; fi");
     if (root_cmd == "ERROR")
     {
         QErrorMessage msg;
@@ -86,7 +86,7 @@ string MainWindow::get_distro()
     {
         return "";
     }
-    string distro = exec("lsb_release -a 2>/dev/null | grep Distributor\\ ID\\: | sed s/Distributor\\ ID\\:\\\\t// | tr -d '\\n' | tr -d '\\r'");
+    string distro = exec("which lsb_release 2>&1 >/dev/null && lsb_release -a 2>/dev/null | grep Distributor\\ ID\\: | sed s/Distributor\\ ID\\:\\\\t// | tr -d '\\n' | tr -d '\\r'");
     if (distro == "ERROR"){
         QErrorMessage msg;
         msg.setWindowTitle("Missing dependancy");
@@ -118,8 +118,13 @@ string MainWindow::exec(string cmd) {
         if (fgets(buffer, 128, pipe) != NULL)
                 result += buffer;
     }
-    pclose(pipe);
-    return result;
+    int err = pclose(pipe);
+    cout << "DEBUG: " << err << endl;
+    if(err > 0){
+        return "ERROR";
+    } else {
+        return result;
+    }
 }
 
 // Slots
