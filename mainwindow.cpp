@@ -1,18 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
-std::string exec(char* cmd) {
-    FILE* pipe = popen(cmd, "r");
-    if (!pipe) return "ERROR";
-    char buffer[128];
-    std::string result = "";
-    while(!feof(pipe)) {
-        if(fgets(buffer, 128, pipe) != NULL)
-                result += buffer;
-    }
-    pclose(pipe);
-    return result;
-}
+#include "pipe.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -21,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     filename = "none";
     app_version = "0.1 SVN";
     accepted_formats[0] = "deb";
+    accepted_formats[1] = "rpm";
 }
 
 MainWindow::~MainWindow()
@@ -73,11 +62,13 @@ string MainWindow::get_file_type()
 string MainWindow::get_root_cmd()
 {
     int uid = getuid();
-    if(uid == 0){
+    if (uid == 0)
+    {
         return "";
     }
-    string root_cmd = exec((char*)"which kdesudo || which kdesu || which gksudo || which gksu | tr -d '\n' | tr -d '\r'");
-    if(root_cmd == "ERROR"){
+    string root_cmd = exec("which kdesudo || which kdesu || which gksudo || which gksu | tr -d '\n' | tr -d '\r'");
+    if (root_cmd == "ERROR")
+    {
         QErrorMessage msg;
         msg.setWindowTitle("Missing dependancy");
         string message = "You need to install one of: kdesudo, kdesu, gksudo, gksu.";
@@ -91,11 +82,12 @@ string MainWindow::get_root_cmd()
 string MainWindow::get_distro()
 {
     int uid = getuid();
-    if(uid == 0){
+    if (uid == 0)
+    {
         return "";
     }
-    string distro = exec((char*)"lsb_release -a 2>/dev/null | grep Distributor\\ ID\\: | sed s/Distributor\\ ID\\:\\\\t// | tr -d '\\n' | tr -d '\\r'");
-    if(distro == "ERROR"){
+    string distro = exec("lsb_release -a 2>/dev/null | grep Distributor\\ ID\\: | sed s/Distributor\\ ID\\:\\\\t// | tr -d '\\n' | tr -d '\\r'");
+    if (distro == "ERROR"){
         QErrorMessage msg;
         msg.setWindowTitle("Missing dependancy");
         string message = "You need to install lsb_release (package name: lsb-release).";
@@ -116,6 +108,20 @@ void MainWindow::show_install_error_distro()
     ui->btn_install->setEnabled(false);
 }
 
+string MainWindow::exec(string cmd) {
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe) return "ERROR";
+    char buffer[128];
+    string result = "";
+    while (!feof(pipe))
+    {
+        if (fgets(buffer, 128, pipe) != NULL)
+                result += buffer;
+    }
+    pclose(pipe);
+    return result;
+}
+
 // Slots
 
 void MainWindow::show_about_dialog()
@@ -132,7 +138,7 @@ void MainWindow::install_file()
 {
     filename_2 = split_string(filename, "_")[0];
     root_cmd = get_root_cmd();
-    cout << "DEBUG: Distro =" << get_distro() << "eat" << endl;
+    cout << "DEBUG: Distro = " << get_distro() << endl;
     cout << "DEBUG: Root command = " << root_cmd << endl;
     if (filetype == "deb")
     {
@@ -141,7 +147,12 @@ void MainWindow::install_file()
             show_install_error_distro();
             return;
         }
-        // Install file
+        // check if in repo
+
+        // Pipe gdebi;
+        // gdebi.write(root_cmd + " gdebi " + filename);
+        // other
+        // gdebi.close();
     }
     else if (filetype == "rpm")
     {
