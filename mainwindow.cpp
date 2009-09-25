@@ -115,7 +115,7 @@ string MainWindow::exec(string cmd) {
     string result = "";
     while (!feof(pipe))
     {
-        if (fgets(buffer, 128, pipe) != NULL)
+        if (fgets(buffer, sizeof(buffer), pipe) != NULL)
                 result += buffer;
     }
     int err = pclose(pipe);
@@ -166,7 +166,14 @@ void MainWindow::install_file()
             show_install_error_distro();
             return;
         }
-        exec(root_cmd + " rpm -i " + filename);
+        Pipe install_rpm(root_cmd + " rpm -i " + filename);
+        cout << "hi" << endl;
+        while (install_rpm.possible_to_read())
+        {
+            cout << install_rpm.read_string();
+        }
+        cout << endl;
+        install_rpm.close();
     }
 }
 
