@@ -166,7 +166,7 @@ void MainWindow::install_file()
             show_install_error_distro();
             return;
         }
-        // Install file
+        exec(root_cmd + " rpm -i " + filename);
     }
 }
 
