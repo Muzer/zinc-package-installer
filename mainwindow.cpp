@@ -39,7 +39,7 @@ void MainWindow::load_file()
     ui->lbl_app_name->setText(QString(filename.c_str()));
     ui->lbl_filename->setText(QString(filename.c_str()));
     filetype = get_file_type();
-    if (array_find(accepted_formats, 1, filetype) == -1)
+    if (array_find(accepted_formats, sizeof(accepted_formats), filetype) == -1)
     {
         QErrorMessage msg;
         msg.setWindowTitle("Format not supported!");
