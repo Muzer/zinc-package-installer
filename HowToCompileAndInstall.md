@@ -1,0 +1,15 @@
+# Introduction #
+
+This is an information page to show you how to compile and install Zinc.
+
+# How to compile #
+
+Run qmake-qt4 in main folder!!!
+
+Run make.
+
+Run ./zinc file... to install a file.
+
+# How to install #
+Compile.
+Copy zinc to /usr/local/bin/ as root (sudo).
